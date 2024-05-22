@@ -1,4 +1,4 @@
-﻿@model SkillsAssessment.Models.Account
+﻿@model SkillsAssessment.ViewModels.AccountVM
 
 @{
     ViewBag.Title = "Details";
@@ -22,45 +22,45 @@
     }
 }
 <div>
-    <h2 align="center" style="color:white;background-color:grey;">@Model.Person.Name @Model.Person.Surname Account Details</h2>
+    <h2 align="center" style="color:white;background-color:grey;">@Model.Account.Person.Name @Model.Account.Person.Surname Account Details</h2>
     <dl class="dl-horizontal">
         <dt>
             Account Holder
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Person.Name)
+            @Html.DisplayFor(model => model.Account.Person.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AccountNumber)
+            @Html.DisplayNameFor(model => model.Account.AccountNumber)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.AccountNumber)
+            @Html.DisplayFor(model => model.Account.AccountNumber)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.OutstandingBalance)
+            @Html.DisplayNameFor(model => model.Account.OutstandingBalance)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.OutstandingBalance)
+            @Html.DisplayFor(model => model.Account.OutstandingBalance)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Status)
+            @Html.DisplayNameFor(model => model.Account.Status)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Status.Name)
+            @Html.DisplayFor(model => model.Account.Status.Name)
         </dd>
 
     </dl>
-    <h2 align="center" style="color:white;background-color:grey;">@Model.Person.Name @Model.Person.Surname Linked Transactions</h2>
-    @Html.ActionLink("Create New Transaction", "Create", "Transactions", new { Code = Model.Code }, null)
-    @Html.Partial("~/Views/Shared/_TransactionInfo.cshtml")
+    <h2 align="center" style="color:white;background-color:grey;">@Model.Account.Person.Name @Model.Account.Person.Surname Linked Transactions</h2>
+    @Html.ActionLink("Create New Transaction", "Create", "Transactions", new { Code = Model.Account.Code }, null)
+    @Html.Partial("~/Views/Shared/_TransactionInfo.cshtml",Model.Transactions)
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Code }) |
-    @Html.ActionLink("Back to Person", "Details","People", new { id = Model.PersonCode },null)
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Account.Code }) |
+    @Html.ActionLink("Back to Person", "Details","People", new { id = Model.Account.PersonCode },null)
 </p>

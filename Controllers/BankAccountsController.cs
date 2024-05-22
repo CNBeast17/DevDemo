@@ -10,6 +10,7 @@ using SkillsAssessment.DataAccessLayer.Repositories;
 using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
 using SkillsAssessment.Keys;
 using SkillsAssessment.Models;
+using SkillsAssessment.ViewModels;
 
 namespace SkillsAssessment.Controllers
 {
@@ -53,14 +54,15 @@ namespace SkillsAssessment.Controllers
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }           
-            Account account = accountRepository.GetAccountByID(id.Value);
-            ViewData["TransactionsInfo"] = transactionRepository.GetAccountTransactions(id.Value);
-            if (account == null)
+            }
+            AccountVM accountVM = new AccountVM();
+            accountVM.Account = accountRepository.GetAccountByID(id.Value);
+            accountVM.Transactions = transactionRepository.GetAccountTransactions(id.Value).ToList();
+            if (accountVM.Account == null)
             {
                 return HttpNotFound();
             }
-            return View(account);
+            return View(accountVM);
         }
 
         // GET: BankAccounts/Create

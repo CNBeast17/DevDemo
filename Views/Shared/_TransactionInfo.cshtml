@@ -1,6 +1,4 @@
-﻿@{
-    var transactions = (IEnumerable<SkillsAssessment.Models.Transaction>)ViewData["TransactionsInfo"];
-}
+﻿@model  IEnumerable<SkillsAssessment.Models.Transaction>
 <table class="table">
     <tr>
         <th>
@@ -18,27 +16,27 @@
         <th></th>
     </tr>
 
-    @foreach (var item in transactions)
+    @foreach (var item in Model)
     {
-<tr>
-    <td>
-        R @item.Amount
-    </td>
-    <td>
-        @item.TransactionDate
-    </td>
-    <td>
-        @item.CaptureDate
-    </td>
-    <td>
-        @item.Description
-    </td>
-    <td>
-        @Html.ActionLink("Edit", "Edit", "Transactions", new { id = item.Code }, null) |
-        @*@Html.ActionLink("Details", "Details", "BankAccounts", new { id = item.Code },null) |
-            @Html.ActionLink("Delete", "Delete", "BankAccounts", new { id = item.Code },null)*@
-    </td>
-</tr>
+        <tr>
+            <td>
+                R @item.Amount
+            </td>
+            <td>
+                @item.TransactionDate
+            </td>
+            <td>
+                @item.CaptureDate
+            </td>
+            <td>
+                @item.Description
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", "Transactions", new { id = item.Code }, null) |
+                @*@Html.ActionLink("Details", "Details", "BankAccounts", new { id = item.Code },null) |
+                    @Html.ActionLink("Delete", "Delete", "BankAccounts", new { id = item.Code },null)*@
+            </td>
+        </tr>
     }
 
 </table>
