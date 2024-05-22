@@ -12,6 +12,7 @@ using System.Web.Http.Description;
 namespace SkillsAssessment.APIServices
 {
     [ApiExplorerSettings(IgnoreApi = false)]
+    [Authorize]
     public class PeopleController : ApiController
     {
         private TraqSoftwareContext db;
