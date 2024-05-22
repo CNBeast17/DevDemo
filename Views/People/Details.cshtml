@@ -1,0 +1,58 @@
+﻿@model SkillsAssessment.ViewModels.PersonAccountsVM
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_TraqLayout.cshtml";
+}
+
+
+@if (TempData["Success"] != null)
+{
+    if (TempData["Success"].Equals(true))
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong> @TempData["CompletedAction"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            @TempData["CompletedAction"]
+        </div>
+    }
+}
+<div>
+    <h2 align="center" style="color:white;background-color:grey;">@Model.Person.Name @Model.Person.Surname Details</h2>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Person.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Person.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Person.Surname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Person.Surname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Person.IDNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Person.IDNumber)
+        </dd>
+
+    </dl>
+</div>
+<h2 align="center" style="color:white;background-color:grey;">@Model.Person.Name @Model.Person.Surname Linked Accounts</h2>
+@Html.ActionLink("Create New Account", "Create", "BankAccounts", new { id = Model.Person.Code }, null)
+@Html.Partial("~/Views/Shared/_AccountInfo.cshtml",Model.Accounts)
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Person.Code }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

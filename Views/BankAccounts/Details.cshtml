@@ -1,0 +1,66 @@
+﻿@model SkillsAssessment.Models.Account
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_TraqLayout.cshtml";
+}
+
+
+@if (TempData["Success"] != null)
+{
+    if (TempData["Success"].Equals(true))
+    {
+        <div class="alert alert-success">
+            <strong>Success!</strong> @TempData["CompletedAction"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">          
+            @TempData["CompletedAction"]
+        </div>
+    }
+}
+<div>
+    <h2 align="center" style="color:white;background-color:grey;">@Model.Person.Name @Model.Person.Surname Account Details</h2>
+    <dl class="dl-horizontal">
+        <dt>
+            Account Holder
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Person.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccountNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OutstandingBalance)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OutstandingBalance)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status.Name)
+        </dd>
+
+    </dl>
+    <h2 align="center" style="color:white;background-color:grey;">@Model.Person.Name @Model.Person.Surname Linked Transactions</h2>
+    @Html.ActionLink("Create New Transaction", "Create", "Transactions", new { Code = Model.Code }, null)
+    @Html.Partial("~/Views/Shared/_TransactionInfo.cshtml")
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Code }) |
+    @Html.ActionLink("Back to Person", "Details","People", new { id = Model.PersonCode },null)
+</p>

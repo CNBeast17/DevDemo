@@ -1,0 +1,50 @@
+﻿@model SkillsAssessment.Models.Account
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_TraqLayout.cshtml";
+}
+
+<h2 align="center" style="color:white;background-color:grey;"> Open @Model.Person.Name @Model.Person.Surname Acount</h2>
+
+<h3>Are you sure you want to open this account?</h3>
+<div>
+    <h4>Account</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Person.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Person.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccountNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OutstandingBalance)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OutstandingBalance)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+<div class="form-actions no-color">
+    <input type="submit" value="Open Account" class="btn btn-default" /> |
+    @Html.ActionLink("Back to Person", "Details", "People", new { id = Model.PersonCode }, null)
+</div>
+    }
+</div>

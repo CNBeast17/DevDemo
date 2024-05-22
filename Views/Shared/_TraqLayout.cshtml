@@ -1,0 +1,613 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta name="google" content="notranslate">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Traq Software Assessment</title>
+
+    <!-- Icons -->
+    @*<link rel="stylesheet" href="~/Content/CRMStyles/fonts/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/Content/CRMStyles/fonts/font-awesome/css/font-awesome.min.css">*@
+
+    <!-- Plugins -->
+
+    <link href="~/Content/ReferencesMKV/c3.css" rel="stylesheet" />
+    <link href="~/Content/ReferencesMKV/waves.css" rel="stylesheet" />
+    <link href="~/Content/ReferencesMKV/perfect-scrollbar.css" rel="stylesheet" />
+
+
+
+    <!-- Css/Less Stylesheets -->
+
+    <link href="~/Content/ReferencesMKV/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/ReferencesMKV/main.min.css" rel="stylesheet" />
+
+    @*Datatables*@
+
+    <link href="~/Content/ReferencesMKV/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/Content/ReferencesMKV/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/ReferencesMKV/responsive.bootstrap.min.css" rel="stylesheet" />
+
+
+
+    @*<link href="~/Content/ReferencesMKV/jquery.steps.css" rel="stylesheet" />
+    <script src="~/Content/ReferencesMKV/jquery.steps.js"></script>*@
+
+    <link href="~/Content/ReferencesMKV/jquery.timepicker.min.css" rel="stylesheet" />
+    <script src="~/Content/ReferencesMKV/jquery.timepicker.min.js"></script>
+    @*<link href="~/Content/bootstrap-select.min.css" rel="stylesheet" />*@
+
+
+    <style>
+        table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td.dtr-control, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th.dtr-control {
+            position: relative;
+            padding-left: 30px !important;
+            cursor: pointer;
+            width: 54px !important;
+        }
+
+        .panel-warning > .panel-heading + .panel-collapse > .panel-body {
+            border-top-color: ##9929ea !important;
+        }
+
+
+        .BoToDoHide {
+            display: none;
+        }
+
+        .button1 {
+            background-color: #3f51b5 !important;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .sk-cube-grid {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: 10px;
+            background-color: grey;
+        }
+
+        .panel-warning {
+            border-color: ##9929ea;
+        }
+
+        .sk-cube-grid .sk-cube-child {
+            width: 33%;
+            height: 33%;
+            background-color: white;
+            float: left;
+            -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+            animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out
+        }
+
+        .sk-cube-grid .sk-cube-grid9 {
+            -webkit-animation-delay: .2s;
+            animation-delay: .2s
+        }
+
+
+        .modal-dialog {
+            position: relative;
+            display: table; /* This is important */
+            overflow-y: auto;
+            overflow-x: auto;
+            width: auto;
+            min-width: 300px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: normal;
+            text-align: center;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid #0089ff;
+            white-space: nowrap;
+            padding: 6px 15px;
+            font-size: 14px;
+            line-height: 1.57142857;
+            border-radius: 2px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+
+        table.dataTable {
+            clear: both !important;
+            margin-top: 6px !important;
+            margin-bottom: 6px !important;
+            max-width: none !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            width: 100% !important;
+        }
+
+        .required-field::after {
+            content: '*';
+            color: red;
+        }
+
+
+        input[type='date'] {
+            position: relative;
+        }
+
+        ::-webkit-datetime-edit, ::-webkit-clear-button, ::-webkit-calendar-picker-indicator {
+            position: absolute;
+        }
+
+        ::-webkit-clear-button {
+            right: 2.5em;
+        }
+
+        ::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        ::-webkit-calendar-picker-indicator {
+            right: 0;
+            padding: .539em .34em;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            color: rgba(0, 0, 0, 0);
+            opacity: 1;
+            display: block;
+            background: url('../../Content/Images/calenderIcon.png') no-repeat;
+            background-size: 20px 20px;
+            width: 20px;
+            height: 20px;
+            border-width: thin;
+            margin-left: 50px;
+        }
+
+        .table > thead > tr > th, .table > tbody > tr > td, .table > tfoot > tr > td {
+            vertical-align: middle !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        table.dataTable thead .sorting_asc:after {
+            content: "\2193";
+        }
+
+        table.dataTable thead .sorting_desc:after {
+            content: "\2193";
+            opacity: 1;
+        }
+
+        table.dataTable thead .sorting:after {
+            opacity: 0.2;
+            content: "\2193";
+        }
+
+        .dataTables_length {
+            display: none;
+        }
+
+
+
+
+        /*AJC New color-profile Added*/
+        .site-head {
+            background-color: ##9929ea;
+        }
+
+        .main-container .nav-wrap .nav-head {
+            background: ##9929ea;
+        }
+
+        .button1 {
+            background-color: ##9929ea !important;
+        }
+
+        .btns {
+            color: ##9929ea !important;
+            border-color: ##9929ea !important;
+            background-color: white !important;
+        }
+
+            .btns:hover {
+                color: white !important;
+                border-color: white !important;
+                background-color: ##9929ea !important;
+            }
+
+        .btnn {
+            color: ##9929ea !important;
+            border-color: ##9929ea !important;
+            background-color: white !important;
+        }
+
+            .btnn:hover {
+                color: white !important;
+                border-color: white !important;
+                background-color: ##9929ea !important;
+            }
+
+        .btn {
+            color: ##9929ea !important;
+            border-color: ##9929ea !important;
+            background-color: white !important;
+        }
+
+            .btn:hover {
+                color: white !important;
+                border-color: white !important;
+                background-color: ##9929ea !important;
+            }
+
+        .btn-default:hover {
+            color: white;
+            border-color: white;
+            background-color: ##9929ea !important;
+        }
+
+
+        .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+            color: #ffffff !important;
+            background-color: grey !important;
+            border-color: #ffffff !important;
+        }
+
+        .headerrow > th {
+            color: white !important;
+        }
+
+        .headerrow {
+            background-color: ##9929ea !important;
+        }
+
+        .fa {
+            color: ##9929ea !important;
+        }
+
+        .tab .nav-tabs li a:hover, .tab .nav-tabs li.active a {
+            background: white !important;
+            color: orange !important;
+            border-color: orange !important;
+            border: 1px !important;
+        }
+
+        .modal-open .modal {
+            overflow-x: hidden;
+            overflow-y: auto;
+            background: #808080d1;
+        }
+
+        .div.nav-head {
+            background-color: ##9929ea !important;
+        }
+
+        * {
+            font-family: Arial !important;
+        }
+
+        .fa {
+            font: normal normal normal 14px/1 FontAwesome !important;
+        }
+
+        .panel-warning > .panel-heading {
+            color: #ffffff;
+            background-color: ##9929ea;
+            border-color: ##9929ea;
+        }
+
+        .main-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            background: #ffffff !important;
+        }
+
+        body {
+            letter-spacing: .5px;
+            background: #ffffff;
+        }
+
+
+        /*AJC New color-profileAdded End*/
+        .ui-icon {
+            display: unset !important;
+            vertical-align: middle;
+            margin-top: -.25em;
+            position: relative !important;
+            text-indent: -99999px;
+            overflow: hidden;
+            background-repeat: no-repeat;
+        }
+
+        .ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span {
+            display: block;
+            position: absolute;
+            left: 50% !important;
+            margin-left: -16px !important;
+            top: 6% !important;
+        }
+
+        .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+            position: absolute;
+            top: 2px;
+            width: 3.8em !important;
+            height: 1.8em;
+        }
+        /*Ash Style*/
+        .TBCHead {
+            width: 100%;
+            background-image: linear-gradient(120deg,##9929ea 60%, grey 9%);
+            color: white;
+        }
+
+        .TBCHead1 {
+            background-color: white !important;
+            color: ##9929ea !important;
+        }
+
+        .TBCHr {
+            border: 1px solid ##9929ea !important;
+        }
+
+        .TBCColor {
+            color: ##9929ea !important;
+        }
+
+        .TBCModalHead {
+            background: ##9929ea !important;
+            color: white !important;
+        }
+
+        @@media only screen and (max-width: 1000px) {
+            .modal-dialog {
+                width: 95% !important
+            }
+
+            div.modal-content {
+                min-width: 300px;
+                width: 95% !important
+            }
+
+            modal fade {
+                min-width: 300px;
+                width: 95% !important
+            }
+        }
+    </style>
+
+</head>
+<body id="app" class="app off-canvas">
+    <!-- header -->
+    <header class="site-head" id="site-head">
+        <ul class="list-unstyled left-elems">
+            <li>
+                <a href="javascript:;" class="nav-trigger ion ion-drag"></a>
+            </li>
+
+            <li>
+                <div class="site-logo visible-xs">
+                    <a href="javascript:;" class="text-uppercase h3">
+                        <span class="text">TSA</span>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </header>
+    <!-- #end header -->
+    <!-- main-container -->
+    <div class="main-container clearfix">
+        <!-- main-navigation -->
+        <aside class="nav-wrap" id="site-nav" data-perfect-scrollbar>
+            <div class="nav-head">
+                <!-- site logo -->
+                <a href="~/Home/Index" class="site-logo text-uppercase">
+                    @*<i class="ion ion-monitor"></i>*@
+                    <img src="~/Content/logo.png" style="width:36px; top:-2px; position:relative; right:6px;" />
+                    <span class="text" align="center">TSA</span>
+                </a>
+            </div>
+
+            <!-- Site nav (vertical) -->
+
+            <nav class="site-nav clearfix" role="navigation">
+                <!-- navigation -->
+                <ul class="list-unstyled clearfix nav-list mb15">
+
+
+                    @if (Request.IsAuthenticated)
+                    {
+                        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+
+                        }
+                        <li>
+                            <a  href="javascript:document.getElementById('logoutForm').submit()">
+                                <i class="ion ion-power"></i>
+                                <span class="text">Log Off</span>
+                                <i class=""></i>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+
+                        <li>
+                            <a  href="~/Account/Login">
+                                <i class="ion ion-log-in"></i>
+                                <span class="text">Login</span>
+                                <i class=""></i>
+                            </a>
+                        </li>
+
+                    }
+                    <li>
+                        <a  href="~/Home/Index">
+                            <i class="ion ion-log-in"></i>
+                            <span class="text">Home</span>
+                            <i class=""></i>
+                        </a>
+                    </li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>
+                            <a  href="~/People/Index">
+                                <i class="ion ion-log-in"></i>
+                                <span class="text">Persons</span>
+                                <i class=""></i>
+                            </a>
+                        </li>
+                    }
+                    <li>
+                        <a  href="~/Home/About">
+                            <i class="ion ion-person"></i>
+                            <span class="text">About</span>
+                            <i class=""></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a  href="~/Home/Contact">
+                            <i class="ion ion-person"></i>
+                            <span class="text">Contact</span>
+                            <i class=""></i>
+                        </a>
+                    </li>
+                    @using Microsoft.AspNet.Identity
+                </ul> <!-- #end navigation -->
+            </nav>
+
+
+        </aside>
+        <!-- #end main-navigation -->
+        <!-- content-here -->
+        <div class="content-container" id="content">
+            <!-- dashboard page -->
+            <div class="page page-dashboard">
+                <div class="page-wrap">
+                    @RenderBody()
+                    <hr />
+
+                </div> <!-- #end page-wrap -->
+            </div>
+            <!-- #end dashboard page -->
+        </div>
+
+    </div> <!-- #end main-container -->
+    <!-- theme settings -->
+    <div class="site-settings clearfix hidden-xs">
+        <div class="settings clearfix">
+            <div class="wrapper left" hidden>
+                <ul class="list-unstyled other-settings">
+                    <li class="clearfix mb10">
+                        <div class="left small">Fixed Header</div>
+                        <div class="md-switch right">
+                            <label>
+                                <input type="checkbox" id="fixedHeader">
+                                <span>&nbsp;</span>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="clearfix mb10">
+                        <div class="left small">Nav Full</div>
+                        <div class="md-switch right">
+                            <label>
+                                <input type="checkbox" id="navFull">
+                                <span>&nbsp;</span>
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+                <hr />
+                <ul class="themes list-unstyled" id="themeColor">
+                    <li data-theme="theme-zero" class="active"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmationModal" role="dialog" style="min-width: 0% !important;">
+        <div class="modal-dialog" style="width: 35%;
+        min-width: 0% !important;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: ##9929ea;color:white;
+        margin: 0px -1px !important;">
+                    <h4 id="modalHeading" align="center" class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <label id="confirmationMessage"></label>
+                </div>
+                <div class="modal-footer" style="align-content: flex-end">
+                    <div class="form-group col-md-9">
+
+                        <button id="btn" class="btn btn-primary" data-dismiss="modal" style="width:30% !important;">Cancel</button>
+                        <button id="confirmationBtn" class="btn btn-primary" data-dismiss="modal" style="width:30% !important;">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="genericMessageModal" role="dialog" style="min-width: 0% !important;">
+        <div class="modal-dialog" style="width: 35%;
+        min-width: 0% !important;">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: ##9929ea;color:white;
+        margin: 0px -1px !important;">
+                    <h4 id="modalHeading" align="center" class="modal-title">Attention</h4>
+                </div>
+                <div class="modal-body">
+                    <label id="genericMessage"></label>
+                </div>
+                <div class="modal-footer" style="align-content: flex-end">
+                    <div class="form-group col-md-7">
+
+                        <button onclick="ZInd()" id="btn" class="btn btn-primary" data-dismiss="modal" style="width:30% !important;">Okay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+                    //AJC GENERIC CONFIRMATION FOR ENTIRE APP
+                    function genericConfirmation(buttonId, Message) {
+                        document.getElementById("confirmationMessage").innerHTML = Message;
+        $('#confirmationModal').modal({
+                        backdrop: 'static',
+            keyboard: false,
+            show: true
+        });
+        $('#confirmationBtn').on('click', function () {
+                        document.getElementById(buttonId).click();
+                    })
+    }
+
+    function genericSystemMessage(Message) {
+                        document.getElementById("genericMessage").innerHTML = Message;
+        $('#genericMessageModal').modal({
+                        backdrop: 'static',
+            keyboard: false,
+            show: true
+        });
+    }
+    </script>
+</body>
+</html>

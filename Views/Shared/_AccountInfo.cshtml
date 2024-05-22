@@ -1,0 +1,48 @@
+﻿@model  IEnumerable<SkillsAssessment.Models.Account>
+@{
+   // var clients = (IEnumerable<SkillsAssessment.Models.Account>)ViewData["AccountInfo"];
+   
+}
+@using SkillsAssessment.Keys;
+<table class="table">
+    <tr>
+        <th>
+            Account Number
+        </th>
+        <th>
+            Outstanding Balance
+        </th>
+        <th>
+            Status 
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @item.AccountNumber
+    </td>
+    <td>
+        @item.OutstandingBalance
+    </td>
+    <td>
+        @item.Status.Name
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", "BankAccounts", new { id = item.Code }, null) |
+        @Html.ActionLink("Details", "Details", "BankAccounts", new { id = item.Code }, null) |
+        @if (item.Status.Key == StatusKeys.AccountOpen)
+        {
+            @Html.ActionLink("Close Account", "Delete", "BankAccounts", new { id = item.Code }, null)
+        }
+        else
+        {
+            @Html.ActionLink("Open Account", "Open", "BankAccounts", new { id = item.Code }, null)
+        }
+    </td>
+</tr>
+    }
+
+</table>

@@ -1,0 +1,45 @@
+﻿@{
+    var transactions = (IEnumerable<SkillsAssessment.Models.Transaction>)ViewData["TransactionsInfo"];
+}
+<table class="table">
+    <tr>
+        <th>
+            Transaction Amount
+        </th>
+        <th>
+            Transaction Date
+        </th>
+        <th>
+            Capture Date
+        </th>
+        <th>
+            Description
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in transactions)
+    {
+<tr>
+    <td>
+        R @item.Amount
+    </td>
+    <td>
+        @item.TransactionDate
+    </td>
+    <td>
+        @item.CaptureDate
+    </td>
+    <td>
+        @item.Description
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", "Transactions", new { id = item.Code }, null) |
+        @*@Html.ActionLink("Details", "Details", "BankAccounts", new { id = item.Code },null) |
+            @Html.ActionLink("Delete", "Delete", "BankAccounts", new { id = item.Code },null)*@
+    </td>
+</tr>
+    }
+
+</table>
+
