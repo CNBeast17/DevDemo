@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.1.11.1\build\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.props" Condition="Exists('packages\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.1.11.1\build\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.props')" />
   <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -25,6 +26,8 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+    <DockerLaunchUrl>http://{ServiceIPAddress}</DockerLaunchUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -235,7 +238,6 @@
     <Content Include="Content\ReferencesMKV\bootstrap.min.css" />
     <Content Include="Content\ReferencesMKV\c3.css" />
     <Content Include="Content\ReferencesMKV\c3.min.js" />
-    <Content Include="Content\ReferencesMKV\CoELogo.png" />
     <Content Include="Content\ReferencesMKV\d3.min.js" />
     <Content Include="Content\ReferencesMKV\datatable.bootstrap.min.js" />
     <Content Include="Content\ReferencesMKV\dataTables.bootstrap.min.css" />
@@ -269,64 +271,11 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Dockerfile" />
+    <None Include=".dockerignore">
+      <DependentUpon>Dockerfile</DependentUpon>
+    </None>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
-    <Content Include="Scripts\dataTables.buttons.min.js" />
-    <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
-    <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
-    <Content Include="Scripts\DataTables\autoFill.foundation.js" />
-    <Content Include="Scripts\DataTables\autoFill.foundation.min.js" />
-    <Content Include="Scripts\DataTables\autoFill.jqueryui.js" />
-    <Content Include="Scripts\DataTables\autoFill.jqueryui.min.js" />
-    <Content Include="Scripts\DataTables\buttons.bootstrap.js" />
-    <Content Include="Scripts\DataTables\buttons.bootstrap.min.js" />
-    <Content Include="Scripts\DataTables\buttons.colVis.js" />
-    <Content Include="Scripts\DataTables\buttons.colVis.min.js" />
-    <Content Include="Scripts\DataTables\buttons.flash.js" />
-    <Content Include="Scripts\DataTables\buttons.flash.min.js" />
-    <Content Include="Scripts\DataTables\buttons.foundation.js" />
-    <Content Include="Scripts\DataTables\buttons.foundation.min.js" />
-    <Content Include="Scripts\DataTables\buttons.html5.js" />
-    <Content Include="Scripts\DataTables\buttons.html5.min.js" />
-    <Content Include="Scripts\DataTables\buttons.jqueryui.js" />
-    <Content Include="Scripts\DataTables\buttons.jqueryui.min.js" />
-    <Content Include="Scripts\DataTables\buttons.print.js" />
-    <Content Include="Scripts\DataTables\buttons.print.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.autoFill.js" />
-    <Content Include="Scripts\DataTables\dataTables.autoFill.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.bootstrap.js" />
-    <Content Include="Scripts\DataTables\dataTables.bootstrap.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.buttons.js" />
-    <Content Include="Scripts\DataTables\dataTables.buttons.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.colReorder.js" />
-    <Content Include="Scripts\DataTables\dataTables.colReorder.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.fixedColumns.js" />
-    <Content Include="Scripts\DataTables\dataTables.fixedColumns.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.fixedHeader.js" />
-    <Content Include="Scripts\DataTables\dataTables.fixedHeader.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.foundation.js" />
-    <Content Include="Scripts\DataTables\dataTables.foundation.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.jqueryui.js" />
-    <Content Include="Scripts\DataTables\dataTables.jqueryui.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.keyTable.js" />
-    <Content Include="Scripts\DataTables\dataTables.keyTable.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.responsive.js" />
-    <Content Include="Scripts\DataTables\dataTables.responsive.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.rowReorder.js" />
-    <Content Include="Scripts\DataTables\dataTables.rowReorder.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.scroller.js" />
-    <Content Include="Scripts\DataTables\dataTables.scroller.min.js" />
-    <Content Include="Scripts\DataTables\dataTables.select.js" />
-    <Content Include="Scripts\DataTables\dataTables.select.min.js" />
-    <Content Include="Scripts\DataTables\jquery.dataTables.js" />
-    <Content Include="Scripts\DataTables\jquery.dataTables.min.js" />
-    <Content Include="Scripts\DataTables\pdfmake.min.js" />
-    <Content Include="Scripts\DataTables\responsive.bootstrap.js" />
-    <Content Include="Scripts\DataTables\responsive.bootstrap.min.js" />
-    <Content Include="Scripts\DataTables\responsive.foundation.js" />
-    <Content Include="Scripts\DataTables\responsive.foundation.min.js" />
-    <Content Include="Scripts\DataTables\responsive.jqueryui.js" />
-    <Content Include="Scripts\DataTables\responsive.jqueryui.min.js" />
-    <Content Include="Scripts\DataTables\vfs_fonts.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -337,7 +286,6 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\JqueryUi.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -443,7 +391,10 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.1.11.1\build\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.1.11.1\build\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.1.11.1\build\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.1.11.1\build\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.targets'))" />
   </Target>
+  <Import Project="packages\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.1.11.1\build\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.targets" Condition="Exists('packages\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.1.11.1\build\Microsoft.VisualStudio.Azure.Containers.Tools.Targets.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
