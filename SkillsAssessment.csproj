@@ -197,12 +197,10 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PeopleController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
-    <Compile Include="DataAccessLayer\Repositories\AccountDetailsViewRepository.cs" />
     <Compile Include="DataAccessLayer\Repositories\AccountRepository.cs" />
     <Compile Include="DataAccessLayer\Repositories\PersonRepository.cs" />
     <Compile Include="DataAccessLayer\Repositories\StatusRepository.cs" />
     <Compile Include="DataAccessLayer\Repositories\TransactionRepository.cs" />
-    <Compile Include="DataAccessLayer\RepositoryInterfaces\IAccountDetailsViewRepository.cs" />
     <Compile Include="DataAccessLayer\RepositoryInterfaces\IAccountRepository.cs" />
     <Compile Include="DataAccessLayer\RepositoryInterfaces\IPersonRepository.cs" />
     <Compile Include="DataAccessLayer\RepositoryInterfaces\IStatusRepository.cs" />

@@ -20,14 +20,12 @@ namespace SkillsAssessment.Controllers
         private TraqSoftwareContext db;
         private IPersonRepository personRepository;
         private IAccountRepository accountRepository;
-        private IAccountDetailsViewRepository accountDetailsViewRepository;
 
         public PeopleController()
         {
             db = new TraqSoftwareContext();
             this.personRepository = new PersonRepository(db);
             this.accountRepository = new AccountRepository(db);
-            this.accountDetailsViewRepository = new AccountDetailsViewRepository();
         }
 
         public JsonResult CheckDuplicateIdNumber(string idNum, int? personCode)
