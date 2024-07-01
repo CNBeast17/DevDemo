@@ -1,4 +1,5 @@
 ﻿using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
+using SkillsAssessment.DataAccessLayer.UnitOfWork;
 using SkillsAssessment.Helpers;
 using SkillsAssessment.Keys;
 using SkillsAssessment.Models;
@@ -18,12 +19,17 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
         private TraqSoftwareContext context;
         private SQLViewHelpers sQLViewHelpers;
         private string connectionString;
-
+        private bool disposed;
+        public AccountRepository(IUnitOfWork<TraqSoftwareContext> unitOfWork)
+          : this(unitOfWork.Context)
+        {          
+        }
         public AccountRepository(TraqSoftwareContext context)
         {
             this.sQLViewHelpers = new SQLViewHelpers();
             this.context = context;
             this.connectionString = ConfigurationManager.ConnectionStrings["TraqSoftwareContext"].ConnectionString;
+            this.disposed = false;
         }
         public IEnumerable<Account> GetAccounts()
         {
@@ -63,17 +69,29 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
 
         public void InsertAccount(Account account)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             context.Accounts.Add(account);
         }
 
         public void DeleteAccount(int code)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             Account account = GetAccountByID(code);
             account.AccountStatusCode = context.Statuses.FirstOrDefault(x => x.Key == StatusKeys.AccountClosed).Code;
             UpdateAccount(account);
         }
         public void OpenAccount(int code)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             Account account = GetAccountByID(code);
             account.AccountStatusCode = context.Statuses.FirstOrDefault(x => x.Key == StatusKeys.AccountOpen).Code;
             UpdateAccount(account);
@@ -81,6 +99,10 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
 
         public void UpdateAccount(Account account)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             account.Person = null;
             account.Status = null;
             context.Set<Account>().AddOrUpdate(account);
@@ -110,12 +132,12 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
             return context.Accounts.Where(x => (string.IsNullOrEmpty(accountNumber) || x.AccountNumber == accountNumber)           
             );
         }
-        public void Save()
-        {
-            context.SaveChanges();
-        }
+        //public void Save()
+        //{
+        //    context.SaveChanges();
+        //}
       
-        private bool disposed = false;
+       
 
         protected virtual void Dispose(bool disposing)
         {

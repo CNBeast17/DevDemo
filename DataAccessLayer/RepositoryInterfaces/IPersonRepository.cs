@@ -15,6 +15,6 @@ namespace SkillsAssessment.DataAccessLayer.RepositoryInterfaces
         void RestorePerson(int code);
         void UpdatePerson(Person person);
         IEnumerable<Person> SearchPeople(string idNum,string name, string surname);
-        void Save();
+       // void Save();
     }
 }

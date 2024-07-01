@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SkillsAssessment.DataAccessLayer.Repositories;
 using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
+using SkillsAssessment.DataAccessLayer.UnitOfWork;
 using SkillsAssessment.Keys;
 using SkillsAssessment.Models;
 
@@ -16,17 +17,18 @@ namespace SkillsAssessment.Controllers
     [Authorize]
     public class TransactionsController : Controller
     {
-        private TraqSoftwareContext db;
+        // private TraqSoftwareContext db;
+        private UnitOfWork<TraqSoftwareContext> unitOfWork = new UnitOfWork<TraqSoftwareContext>();
         private ITransactionRepository transactionRepository;
         private IAccountRepository accountRepository;
         private IStatusRepository statusRepository;
 
         public TransactionsController()
         {
-            db = new TraqSoftwareContext();
-            this.transactionRepository = new TransactionRepository(db);
-            this.accountRepository = new AccountRepository(db);
-            this.statusRepository = new StatusRepository(db);
+            //db = new TraqSoftwareContext();
+            this.transactionRepository = new TransactionRepository(unitOfWork);
+            this.accountRepository = new AccountRepository(unitOfWork);
+            this.statusRepository = new StatusRepository(unitOfWork);
         }
         // GET: Transactions
         public ActionResult Index()
@@ -83,15 +85,18 @@ namespace SkillsAssessment.Controllers
             if (ModelState.IsValid)
             {               
                 transaction.SetCaptureDate();
+                unitOfWork.CreateTransaction();
+
                 transactionRepository.InsertTransaction(transaction);
-                transactionRepository.Save();
+               
                 //Update and save account balance with new transaction
-                this.accountRepository = new AccountRepository(new TraqSoftwareContext());
+                //this.accountRepository = new AccountRepository(new TraqSoftwareContext());
                 Account account = accountRepository.GetAccountByID(transaction.AccountCode);
                 account.SetAccountBalance(transactionRepository.GetAccountDebitTransactionsAmounts(transaction.AccountCode).ToList()
                     ,transactionRepository.GetAccountCreditTransactionsAmounts(transaction.AccountCode).ToList());        
                 accountRepository.UpdateAccount(account);
-                accountRepository.Save();
+                unitOfWork.Save();
+                unitOfWork.Commit();
 
                 TempData["Success"] = true;
                 TempData["CompletedAction"] = "Transaction captured succesfully!";
@@ -131,17 +136,19 @@ namespace SkillsAssessment.Controllers
         {
             if (ModelState.IsValid)
             {
+                unitOfWork.CreateTransaction();
+
                 transaction.SetCaptureDate();
                 transactionRepository.UpdateTransaction(transaction);
-                transactionRepository.Save();
-
+               
                 //Update and save account balance with new transaction
-                this.accountRepository = new AccountRepository(new TraqSoftwareContext());
+                //this.accountRepository = new AccountRepository(new TraqSoftwareContext());
                 Account account = accountRepository.GetAccountByID(transaction.AccountCode);
                 account.SetAccountBalance(transactionRepository.GetAccountDebitTransactionsAmounts(transaction.AccountCode).ToList()
                     , transactionRepository.GetAccountCreditTransactionsAmounts(transaction.AccountCode).ToList());
                 accountRepository.UpdateAccount(account);
-                accountRepository.Save();
+                unitOfWork.Save();
+                unitOfWork.Commit();
                 return RedirectToAction("Details", "BankAccounts", new { id = transaction.AccountCode });
             }
             ViewBag.Description = new SelectList(new List<string> { "Charge Off Amount", "Credit Amount" }, transaction.Description);

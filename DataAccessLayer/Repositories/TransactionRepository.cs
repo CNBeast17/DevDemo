@@ -1,4 +1,5 @@
 ﻿using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
+using SkillsAssessment.DataAccessLayer.UnitOfWork;
 using SkillsAssessment.Models;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,16 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
     public class TransactionRepository:ITransactionRepository
     {
         private TraqSoftwareContext context;
+        private bool disposed;
 
+        public TransactionRepository(IUnitOfWork<TraqSoftwareContext> unitOfWork)
+          : this(unitOfWork.Context)
+        {
+        }
         public TransactionRepository(TraqSoftwareContext context)
         {
             this.context = context;
+            this.disposed = false;
         }
         public IEnumerable<Transaction> GetTransactions()
         {
@@ -28,17 +35,29 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
 
         public void InsertTransaction(Transaction transaction)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             context.Transactions.Add(transaction);
         }
 
         public void DeleteTransaction(int code)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             Transaction transaction = GetTransactionByID(code);
             context.Transactions.Remove(transaction);
         }
 
         public void UpdateTransaction(Transaction transaction)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             transaction.Account = null;
             context.Entry(transaction).State = EntityState.Modified;
         }
@@ -62,12 +81,12 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
         {
             return GetAccountDebitTransactions(accountCode).Select(x => x.Amount);
         }
-        public void Save()
-        {
-            context.SaveChanges();
-        }
+        //public void Save()
+        //{
+        //    context.SaveChanges();
+        //}
 
-        private bool disposed = false;
+        
 
         protected virtual void Dispose(bool disposing)
         {

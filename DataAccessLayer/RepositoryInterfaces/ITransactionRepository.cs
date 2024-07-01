@@ -18,6 +18,6 @@ namespace SkillsAssessment.DataAccessLayer.RepositoryInterfaces
         IEnumerable<Transaction> GetAccountDebitTransactions(int accountCode);
         IEnumerable<decimal> GetAccountCreditTransactionsAmounts(int accountCode);
         IEnumerable<decimal> GetAccountDebitTransactionsAmounts(int accountCode);
-        void Save();
+       // void Save();
     }
 }

@@ -205,6 +205,8 @@
     <Compile Include="DataAccessLayer\RepositoryInterfaces\IPersonRepository.cs" />
     <Compile Include="DataAccessLayer\RepositoryInterfaces\IStatusRepository.cs" />
     <Compile Include="DataAccessLayer\RepositoryInterfaces\ITransactionRepository.cs" />
+    <Compile Include="DataAccessLayer\UnitOfWork\IUnitOfWork.cs" />
+    <Compile Include="DataAccessLayer\UnitOfWork\UnitOfWork.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

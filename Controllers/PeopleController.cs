@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SkillsAssessment.DataAccessLayer.Repositories;
 using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
+using SkillsAssessment.DataAccessLayer.UnitOfWork;
 using SkillsAssessment.Keys;
 using SkillsAssessment.Models;
 using SkillsAssessment.ViewModels;
@@ -17,15 +18,16 @@ namespace SkillsAssessment.Controllers
     [Authorize]
     public class PeopleController : Controller
     {
-        private TraqSoftwareContext db;
+        private UnitOfWork<TraqSoftwareContext> unitOfWork = new UnitOfWork<TraqSoftwareContext>();
+        //private TraqSoftwareContext db;
         private IPersonRepository personRepository;
         private IAccountRepository accountRepository;
 
         public PeopleController()
         {
-            db = new TraqSoftwareContext();
-            this.personRepository = new PersonRepository(db);
-            this.accountRepository = new AccountRepository(db);
+           // db = new TraqSoftwareContext();
+            this.personRepository = new PersonRepository(unitOfWork);
+            this.accountRepository = new AccountRepository(unitOfWork);
         }
 
         public JsonResult CheckDuplicateIdNumber(string idNum, int? personCode)
@@ -90,6 +92,7 @@ namespace SkillsAssessment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Code,Name,Surname,IDNumber")] Person person)
         {        
+
             object idExists = CheckDuplicateIdNumber(person.IDNumber, null).Data;
             if (idExists != null)
             {
@@ -103,8 +106,11 @@ namespace SkillsAssessment.Controllers
             if (ModelState.IsValid)
             {
                 person.IsActive = true;
+                unitOfWork.CreateTransaction();
+
                 personRepository.InsertPerson(person);
-                personRepository.Save();
+                unitOfWork.Save();
+                unitOfWork.Commit();
                 TempData["Success"] = true;
                 TempData["CompletedAction"] = "Person successfuly created!";
                 TempData.Keep("Success");
@@ -150,8 +156,11 @@ namespace SkillsAssessment.Controllers
             }
             if (ModelState.IsValid)
             {
+                unitOfWork.CreateTransaction();
+
                 personRepository.UpdatePerson(person);
-                personRepository.Save();
+                unitOfWork.Save();
+                unitOfWork.Commit();
                 TempData["Success"] = true;
                 TempData["CompletedAction"] = "Person successfuly updated!";
                 TempData.Keep("Success");
@@ -195,8 +204,11 @@ namespace SkillsAssessment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            unitOfWork.CreateTransaction();
+
             personRepository.DeletePerson(id);
-            personRepository.Save();
+            unitOfWork.Save();
+            unitOfWork.Commit();
             TempData["Success"] = true;
             TempData["CompletedAction"] = "Person has been deleted successfuly!";
             TempData.Keep("Success");
@@ -235,8 +247,11 @@ namespace SkillsAssessment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RestoreConfirmed(int id)
         {
+            unitOfWork.CreateTransaction();
+
             personRepository.RestorePerson(id);
-            personRepository.Save();
+            unitOfWork.Save();
+            unitOfWork.Commit();
             TempData["Success"] = true;
             TempData["CompletedAction"] = "Person has been restored successfuly!";
             TempData.Keep("Success");

@@ -17,7 +17,7 @@ namespace SkillsAssessment.DataAccessLayer.RepositoryInterfaces
         void OpenAccount(int code);
         void UpdateAccount(Account account);
         IEnumerable<Account> SearchAccounts(string accountNumber);
-        void Save();
+      //  void Save();
 
 
     }

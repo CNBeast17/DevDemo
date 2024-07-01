@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SkillsAssessment.DataAccessLayer.Repositories;
 using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
+using SkillsAssessment.DataAccessLayer.UnitOfWork;
 using SkillsAssessment.Keys;
 using SkillsAssessment.Models;
 using SkillsAssessment.ViewModels;
@@ -17,7 +18,8 @@ namespace SkillsAssessment.Controllers
     [Authorize]
     public class BankAccountsController : Controller
     {
-        private TraqSoftwareContext db = new TraqSoftwareContext();
+        private UnitOfWork<TraqSoftwareContext> unitOfWork = new UnitOfWork<TraqSoftwareContext>();
+        //private TraqSoftwareContext db = new TraqSoftwareContext();
         private IAccountRepository accountRepository;
         private IPersonRepository personRepository;
         private IStatusRepository statusRepository;
@@ -25,11 +27,11 @@ namespace SkillsAssessment.Controllers
 
         public BankAccountsController()
         {
-            this.db = new TraqSoftwareContext();
-            this.accountRepository = new AccountRepository(db);
-            this.personRepository = new PersonRepository(db);
-            this.statusRepository = new StatusRepository(db);
-            this.transactionRepository = new TransactionRepository(db);
+            //this.db = new TraqSoftwareContext();
+            this.accountRepository = new AccountRepository(unitOfWork);
+            this.personRepository = new PersonRepository(unitOfWork);
+            this.statusRepository = new StatusRepository(unitOfWork);
+            this.transactionRepository = new TransactionRepository(unitOfWork);
         }
         public JsonResult CheckDuplicateAccountNumber(string accountNumber,int? accountCode)
         {
@@ -102,9 +104,12 @@ namespace SkillsAssessment.Controllers
             }
             if (ModelState.IsValid)
             {
+                unitOfWork.CreateTransaction();
+
                 account.AccountStatusCode = statusRepository.GetStatuses().FirstOrDefault(x => x.Key == StatusKeys.AccountOpen).Code;
                 accountRepository.InsertAccount(account);
-                accountRepository.Save();
+                unitOfWork.Save();
+                unitOfWork.Commit();
                 TempData["Success"] = true;
                 TempData["CompletedAction"] = "Account successfuly created!";
                 TempData.Keep("Success");
@@ -129,7 +134,7 @@ namespace SkillsAssessment.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.PersonCode = new SelectList(db.People, "Code", "Name", account.PersonCode);
+            ViewBag.PersonCode = new SelectList(unitOfWork.Context.People, "Code", "Name", account.PersonCode);
             return View(account);
         }
 
@@ -153,8 +158,11 @@ namespace SkillsAssessment.Controllers
             }
             if (ModelState.IsValid)
             {
+                unitOfWork.CreateTransaction();
+
                 accountRepository.UpdateAccount(account);
-                accountRepository.Save();
+                unitOfWork.Save();
+                unitOfWork.Commit();
                 TempData["Success"] = true;
                 TempData["CompletedAction"] = "Account successfuly updated!";
                 TempData.Keep("Success");
@@ -206,9 +214,11 @@ namespace SkillsAssessment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            unitOfWork.CreateTransaction();
 
             accountRepository.DeleteAccount(id);
-            accountRepository.Save();
+            unitOfWork.Save();
+            unitOfWork.Commit();
             TempData["Success"] = true;
             TempData["CompletedAction"] = "Account has been closed!";
             TempData.Keep("Success");
@@ -255,8 +265,11 @@ namespace SkillsAssessment.Controllers
         public ActionResult OpenConfirmed(int id)
         {
 
+            unitOfWork.CreateTransaction();
+
             accountRepository.OpenAccount(id);
-            accountRepository.Save();
+            unitOfWork.Save();
+            unitOfWork.Commit();
             TempData["Success"] = true;
             TempData["CompletedAction"] = "Account has been reopened!";
             TempData.Keep("Success");

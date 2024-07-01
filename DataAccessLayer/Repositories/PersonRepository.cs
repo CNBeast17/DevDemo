@@ -1,4 +1,5 @@
 ﻿using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
+using SkillsAssessment.DataAccessLayer.UnitOfWork;
 using SkillsAssessment.Helpers;
 using SkillsAssessment.Models;
 using System;
@@ -16,11 +17,20 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
         private TraqSoftwareContext context;
         private string connectionString;
         private SQLViewHelpers sQLViewHelpers;
+        private bool disposed;
+
+        public PersonRepository(IUnitOfWork<TraqSoftwareContext> unitOfWork)
+            : this(unitOfWork.Context)
+        {
+          
+        }
         public PersonRepository(TraqSoftwareContext context)
         {
             this.sQLViewHelpers = new SQLViewHelpers();
             this.context = context;
             this.connectionString = ConfigurationManager.ConnectionStrings["TraqSoftwareContext"].ConnectionString;
+            this.disposed = false;
+
         }
         public IEnumerable<Person> GetPeople()
         {
@@ -60,6 +70,10 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
 
         public void InsertPerson(Person person)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             context.People.Add(person);
         }
 
@@ -67,22 +81,34 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
         {
             Person person = GetPersonByID(code);
             person.IsActive = false;
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             UpdatePerson(person);
         }
         public void RestorePerson(int code)
         {
             Person person = GetPersonByID(code);
             person.IsActive = true;
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             UpdatePerson(person);
         }
         public void UpdatePerson(Person person)
         {
+            if (context == null || disposed)
+            {
+                context = new TraqSoftwareContext();
+            }
             context.Entry(person).State = EntityState.Modified;
         }
-        public void Save()
-        {
-            context.SaveChanges();
-        }
+        //public void Save()
+        //{
+        //    context.SaveChanges();
+        //}
         public IEnumerable<Person> SearchPeople(string idNum, string name, string surname)
         {
             //Dynamic search that searchs by parameter if value is provided
@@ -127,7 +153,7 @@ namespace SkillsAssessment.DataAccessLayer.Repositories
             }
             return people;
         }
-        private bool disposed = false;
+        
 
         protected virtual void Dispose(bool disposing)
         {
