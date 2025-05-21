@@ -1,0 +1,21 @@
+﻿@model SkillsAssessment.Models.Interfaces.IUI
+@using SkillsAssessment.Keys
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    if (Model.MessageType == UIKeys.Error)
+    {
+        <div class="alert-danger">
+            <a class="close" data-dismiss="alert">×</a>
+            @Model.Message
+        </div>
+    }
+    else if (Model.MessageType == UIKeys.Success)
+    {
+        <div class="alert alert-success">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>@Model.Message</strong>
+        </div>
+    }
+}
+
+

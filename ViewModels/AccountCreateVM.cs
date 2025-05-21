@@ -4,14 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SkillsAssessment.ViewModels
 {
-    public class AccountVM :IUI
+    public class AccountCreateVM:IUI
     {
         public Account Account { get; set; }
-        public List<Transaction> Transactions { get; set; }
         public string Message { get; set; }
         public string MessageType { get; set; }
+        public SelectList PersonCodeList { get; set; }
+        public SelectList StatusCodeList { get; set; }
     }
 }

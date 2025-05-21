@@ -1,4 +1,4 @@
-﻿@model SkillsAssessment.Models.Account
+﻿@model SkillsAssessment.ViewModels.AccountCreateVM
 
 @{
     ViewBag.Title = "Create";
@@ -16,17 +16,17 @@
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
-                @Html.LabelFor(model => model.PersonCode, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Account.PersonCode, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DropDownList("PersonCode", null, htmlAttributes: new { @class = "form-control", @readonly = "readonly" })
-                    @Html.ValidationMessageFor(model => model.PersonCode, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(model => model.Account.PersonCode, Model.PersonCodeList, htmlAttributes: new { @class = "form-control", @readonly = "readonly" })
+                    @Html.ValidationMessageFor(model => model.Account.PersonCode, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "control-label col-md-2 required-field" })
+                @Html.LabelFor(model => model.Account.AccountNumber, htmlAttributes: new { @class = "control-label col-md-2 required-field" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.AccountNumber, new
+                    @Html.EditorFor(model => model.Account.AccountNumber, new
                {
                    htmlAttributes = new
                    {
@@ -39,22 +39,22 @@
                        @onfocusout = "CheckDuplicateAccountNumber(this.value)"
                    }
                })
-                    @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Account.AccountNumber, "", new { @class = "text-danger" })
                 </div>
             </div>
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group hidden">
-                @Html.LabelFor(model => model.AccountStatusCode, "Account Status", htmlAttributes: new { @class = "control-label col-md-2 required-field" })
+                @Html.LabelFor(model => model.Account.AccountStatusCode, "Account Status", htmlAttributes: new { @class = "control-label col-md-2 required-field" })
                 <div class="col-md-10">
-                    @Html.DropDownList("StatusCode", null, htmlAttributes: new { @class = "form-control", @required = "required" })
-                    @Html.ValidationMessageFor(model => model.AccountStatusCode, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(model => model.Account.AccountStatusCode, Model.StatusCodeList, htmlAttributes: new { @class = "form-control", @required = "required" })
+                    @Html.ValidationMessageFor(model => model.Account.AccountStatusCode, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.OutstandingBalance, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Account.OutstandingBalance, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.OutstandingBalance, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                    @Html.ValidationMessageFor(model => model.OutstandingBalance, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.Account.OutstandingBalance, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.Account.OutstandingBalance, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -67,7 +67,7 @@
     }
 
     <div>
-        @Html.ActionLink("Back to Account", "Details","People", new { id = Model.PersonCode },null)
+        @Html.ActionLink("Back to Account", "Details","People", new { id = Model.Account.PersonCode },null)
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>

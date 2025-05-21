@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SkillsAssessment.DataAccessLayer.Repositories;
 using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
 using SkillsAssessment.DataAccessLayer.UnitOfWork;
+using SkillsAssessment.Helpers;
 using SkillsAssessment.Keys;
 using SkillsAssessment.Models;
 using SkillsAssessment.ViewModels;
@@ -18,36 +19,33 @@ namespace SkillsAssessment.Controllers
     [Authorize]
     public class BankAccountsController : Controller
     {
-        private UnitOfWork<TraqSoftwareContext> unitOfWork = new UnitOfWork<TraqSoftwareContext>();
-        //private TraqSoftwareContext db = new TraqSoftwareContext();
+        private UnitOfWork<TraqSoftwareContext> unitOfWork;
         private IAccountRepository accountRepository;
         private IPersonRepository personRepository;
         private IStatusRepository statusRepository;
         private ITransactionRepository transactionRepository;
+        private AccountHelpers _accountHelpers;
+        private PersonHelpers _personHelpers;
 
         public BankAccountsController()
         {
-            //this.db = new TraqSoftwareContext();
+            unitOfWork = new UnitOfWork<TraqSoftwareContext>();
             this.accountRepository = new AccountRepository(unitOfWork);
             this.personRepository = new PersonRepository(unitOfWork);
             this.statusRepository = new StatusRepository(unitOfWork);
             this.transactionRepository = new TransactionRepository(unitOfWork);
+            _accountHelpers = new AccountHelpers(unitOfWork);
+            _personHelpers = new PersonHelpers(unitOfWork);
         }
         public JsonResult CheckDuplicateAccountNumber(string accountNumber,int? accountCode)
         {
-            object result = null;
-             if (accountNumber != "" && accountNumber != null)
-                {
-                    //reuse of functionality 
-                    //instead of creating another similar method that specifically brings back one record
-                    result = accountRepository.SearchAccounts(accountNumber).Where(x=>x.Code != accountCode).FirstOrDefault();
-                }         
+            object result = _accountHelpers.CheckGetDuplicateAccount(accountNumber, accountCode);                  
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         // GET: BankAccounts
         public ActionResult Index()
         {
-            return View(accountRepository.GetAccounts());
+            return View(_accountHelpers.GetAccounts());
         }
 
         // GET: BankAccounts/Details/5
@@ -57,9 +55,7 @@ namespace SkillsAssessment.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AccountVM accountVM = new AccountVM();
-            accountVM.Account = accountRepository.GetAccountByID(id.Value);
-            accountVM.Transactions = transactionRepository.GetAccountTransactions(id.Value).ToList();
+            AccountVM accountVM = _accountHelpers.GetAccountVM(id.Value);
             if (accountVM.Account == null)
             {
                 return HttpNotFound();
@@ -70,19 +66,14 @@ namespace SkillsAssessment.Controllers
         // GET: BankAccounts/Create
         public ActionResult Create(int id)
         {
-            Person person = personRepository.GetPersonByID(id);
+            Person person = _personHelpers.GetPersonByID(id);
             if (!person.IsActive)
             {
-                TempData["Success"] = false;
-                TempData["CompletedAction"] = "Accounts cannot be created for deleted people";
-                TempData.Keep("Success");
-                TempData.Keep("CompletedAction");
-                TempData.Keep();
-                return RedirectToAction("Details", "People", new { id = id });
+                return View("Details", "People", _personHelpers.GetPersonVMUserDeleted(id));
             }
-            ViewBag.PersonCode = new SelectList(new List<Person> { personRepository.GetPersonByID(id) }, "Code", "Name", id);
-            ViewBag.StatusCode = new SelectList(statusRepository.GetStatuses(), "Code", "Name");
-            return View(new Account { PersonCode = id});
+            else {
+                return View(_accountHelpers.GetAccountCreateVM(id));
+            }            
         }
 
         // POST: BankAccounts/Create
@@ -90,9 +81,9 @@ namespace SkillsAssessment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Code,PersonCode,AccountNumber,OutstandingBalance,AccountStatusCode")] Account account)
+        public ActionResult Create(AccountCreateVM accountCreateVM)
         {
-            object accountExits = CheckDuplicateAccountNumber(account.AccountNumber, null).Data;
+            object accountExits = CheckDuplicateAccountNumber(accountCreateVM.Account.AccountNumber, null).Data;
             if (accountExits != null)
             {
                 TempData["Success"] = false;
@@ -100,14 +91,14 @@ namespace SkillsAssessment.Controllers
                 TempData.Keep("Success");
                 TempData.Keep("CompletedAction");
                 TempData.Keep();
-                return View(account);
+                return View(accountCreateVM);
             }
             if (ModelState.IsValid)
             {
                 unitOfWork.CreateTransaction();
 
-                account.AccountStatusCode = statusRepository.GetStatuses().FirstOrDefault(x => x.Key == StatusKeys.AccountOpen).Code;
-                accountRepository.InsertAccount(account);
+                accountCreateVM.Account.AccountStatusCode = statusRepository.GetStatuses().FirstOrDefault(x => x.Key == StatusKeys.AccountOpen).Code;
+                accountRepository.InsertAccount(accountCreateVM.Account);
                 unitOfWork.Save();
                 unitOfWork.Commit();
                 TempData["Success"] = true;
@@ -115,11 +106,11 @@ namespace SkillsAssessment.Controllers
                 TempData.Keep("Success");
                 TempData.Keep("CompletedAction");
                 TempData.Keep();
-                return RedirectToAction("Details", "People", new { id = account.PersonCode });
+                return RedirectToAction("Details", "People", new { id = accountCreateVM.Account.PersonCode });
             }
 
-            ViewBag.PersonCode = new SelectList(new List<Person> { personRepository.GetPersonByID(account.PersonCode) }, "Code", "Name", account.PersonCode);
-            return View(account);
+            ViewBag.PersonCode = new SelectList(new List<Person> { personRepository.GetPersonByID(accountCreateVM.Account.PersonCode) }, "Code", "Name", accountCreateVM.Account.PersonCode);
+            return View(accountCreateVM);
         }
 
         // GET: BankAccounts/Edit/5
