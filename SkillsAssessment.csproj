@@ -230,6 +230,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="DataAccessLayer\TraqSoftwareContext.cs" />
     <Compile Include="ViewModels\AccountVM.cs" />
+    <Compile Include="ViewModels\PeopleListVM.cs" />
     <Compile Include="ViewModels\PersonAccountsVM.cs" />
     <Compile Include="ViewModels\AccountCreateVM.cs" />
     <Compile Include="ViewModels\PersonVM.cs" />

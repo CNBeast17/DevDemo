@@ -69,7 +69,7 @@ namespace SkillsAssessment.Controllers
             Person person = _personHelpers.GetPersonByID(id);
             if (!person.IsActive)
             {
-                return View("Details", "People", _personHelpers.GetPersonVMUserDeleted(id));
+                return RedirectToAction("Details", "People", new {id=id});
             }
             else {
                 return View(_accountHelpers.GetAccountCreateVM(id));

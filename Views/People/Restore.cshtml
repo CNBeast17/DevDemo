@@ -1,37 +1,37 @@
-﻿@model SkillsAssessment.Models.Person
+﻿@model SkillsAssessment.ViewModels.PersonVM
 
 @{
     Layout = "~/Views/Shared/_TraqLayout.cshtml";
     ViewBag.Title = "Delete";
 }
 
-<h2 align="center" style="background-color:grey; color:white;text-align:center">Restore @Model.Name @Model.Surname</h2>
+<h2 align="center" style="background-color:grey; color:white;text-align:center">Restore @Model.Person.Name @Model.Person.Surname</h2>
 
 <h3>Are you sure you want to restore this person?</h3>
 <div>
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Person.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Person.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Surname)
+            @Html.DisplayNameFor(model => model.Person.Surname)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Surname)
+            @Html.DisplayFor(model => model.Person.Surname)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.IDNumber)
+            @Html.DisplayNameFor(model => model.Person.IDNumber)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.IDNumber)
+            @Html.DisplayFor(model => model.Person.IDNumber)
         </dd>
 
     </dl>

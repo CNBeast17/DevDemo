@@ -1,24 +1,10 @@
-﻿@model IEnumerable<SkillsAssessment.Models.Person>
+﻿@model SkillsAssessment.ViewModels.PeopleListVM
 
 @{
     Layout = "~/Views/Shared/_TraqLayout.cshtml";
     ViewBag.Title = "Index";
 }
-@if (TempData["Success"] != null)
-{
-    if (TempData["Success"].Equals(true))
-    {
-        <div class="alert alert-success">
-            <strong>Success!</strong> @TempData["CompletedAction"]
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-danger">
-            @TempData["CompletedAction"]
-        </div>
-    }
-}
+@Html.Partial("~/Views/Shared/_UIMessagePartial.cshtml", Model)
 <html>
 <head>
 </head>
@@ -31,20 +17,20 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                   Name
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Surname)
+                    Surname
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.IDNumber)
+                    ID Number
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
 
-            @foreach (var item in Model)
+            @foreach (var item in Model.People)
             {
                 <tr>
                     <td>

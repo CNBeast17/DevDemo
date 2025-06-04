@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SkillsAssessment.DataAccessLayer.Repositories;
 using SkillsAssessment.DataAccessLayer.RepositoryInterfaces;
 using SkillsAssessment.DataAccessLayer.UnitOfWork;
+using SkillsAssessment.Helpers;
 using SkillsAssessment.Keys;
 using SkillsAssessment.Models;
 using SkillsAssessment.ViewModels;
@@ -18,71 +19,37 @@ namespace SkillsAssessment.Controllers
     [Authorize]
     public class PeopleController : Controller
     {
-        private UnitOfWork<TraqSoftwareContext> unitOfWork = new UnitOfWork<TraqSoftwareContext>();
-        //private TraqSoftwareContext db;
-        private IPersonRepository personRepository;
-        private IAccountRepository accountRepository;
+        private UnitOfWork<TraqSoftwareContext> _unitOfWork;
+        private PersonHelpers _personHelpers;
 
         public PeopleController()
         {
-           // db = new TraqSoftwareContext();
-            this.personRepository = new PersonRepository(unitOfWork);
-            this.accountRepository = new AccountRepository(unitOfWork);
+            _unitOfWork = new UnitOfWork<TraqSoftwareContext>();           
+            _personHelpers = new PersonHelpers(_unitOfWork);
         }
 
         public JsonResult CheckDuplicateIdNumber(string idNum, int? personCode)
         {
-            object result = null;
-            try
-            {                
-                if (idNum != "" && idNum != null)
-                {
-                    //reuse of functionality 
-                    //instead of creating another similar method that specifically brings back one record
-                    result = personRepository.SearchPeople(idNum, "", "").Where(x => x.Code != personCode).FirstOrDefault();
-                }
-            }
-            catch (Exception ex)
-            {
-                string e = ex.Message;
-            }
+            object result = _personHelpers.CheckDuplicatePerson(idNum, personCode);            
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         // GET: People
         public ActionResult Index(string IdNumber,string Name, string Surname)
         {
-            //accountDetailsViewRepository.GetAccounts();
-            return View(personRepository.SearchPeople(IdNumber,Name,Surname));
-            //return View(personRepository.GetPeople());
+            return View(_personHelpers.GetPeopleVM(IdNumber,Name,Surname));
         }
 
         // GET: People/Details/5
         public ActionResult Details(int? id)
         {
-
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            IAccountRepository accountRepository = new AccountRepository(new TraqSoftwareContext());
-            PersonAccountsVM personAccountsVM = new PersonAccountsVM();
-            personAccountsVM.Person = personRepository.GetPersonByID(id.Value);
-            //Person person = personRepository.GetPersonByID(id.Value);
-            personAccountsVM.Accounts = accountRepository.GetPersonAccounts(id.Value).ToList();
-            //ViewData["AccountInfo"] = accountRepository.GetPersonAccounts(id.Value);
-            if (personAccountsVM.Person == null)
-            {
-                return HttpNotFound();
-            }
-            return View(personAccountsVM);
+            return View(_personHelpers.GetPersonAccountVM(id));
         }
 
         // GET: People/Create
         public ActionResult Create()
-        {
-            
-            return View();
+        {           
+            return View(new PersonVM());
         }
 
         // POST: People/Create
@@ -90,51 +57,23 @@ namespace SkillsAssessment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Code,Name,Surname,IDNumber")] Person person)
+        public ActionResult Create(PersonVM personVM)
         {        
-
-            object idExists = CheckDuplicateIdNumber(person.IDNumber, null).Data;
+            object idExists = CheckDuplicateIdNumber(personVM.Person.IDNumber, null).Data;
             if (idExists != null)
             {
-                TempData["Success"] = false;
-                TempData["CompletedAction"] = "ID Number already Exists!";
-                TempData.Keep("Success");
-                TempData.Keep("CompletedAction");
-                TempData.Keep();
-                return View(person);
+                return View(_personHelpers.GetPersonVMUserExists(personVM.Person));
             }
-            if (ModelState.IsValid)
+            else
             {
-                person.IsActive = true;
-                unitOfWork.CreateTransaction();
-
-                personRepository.InsertPerson(person);
-                unitOfWork.Save();
-                unitOfWork.Commit();
-                TempData["Success"] = true;
-                TempData["CompletedAction"] = "Person successfuly created!";
-                TempData.Keep("Success");
-                TempData.Keep("CompletedAction");
-                TempData.Keep();
-                return RedirectToAction("Index");
+                return View("Index", _personHelpers.SavePerson(personVM.Person));
             }
-
-            return View(person);
         }
 
         // GET: People/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Person person = personRepository.GetPersonByID(id.Value);
-            if (person == null)
-            {
-                return HttpNotFound();
-            }
-            return View(person);
+            return View(_personHelpers.GetPersonVM(id.Value));
         }
 
         // POST: People/Edit/5
@@ -142,61 +81,30 @@ namespace SkillsAssessment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Code,Name,Surname,IDNumber,IsActive")] Person person)
+        public ActionResult Edit(Person person)
         {
             object idExists = CheckDuplicateIdNumber(person.IDNumber, person.Code).Data;
             if (idExists != null)
             {
-                TempData["Success"] = false;
-                TempData["CompletedAction"] = "ID Number already Exists!";
-                TempData.Keep("Success");
-                TempData.Keep("CompletedAction");
-                TempData.Keep();
-                return View(person);
+                return View(_personHelpers.GetPersonVMUserExists(person));
             }
-            if (ModelState.IsValid)
+            else 
             {
-                unitOfWork.CreateTransaction();
-
-                personRepository.UpdatePerson(person);
-                unitOfWork.Save();
-                unitOfWork.Commit();
-                TempData["Success"] = true;
-                TempData["CompletedAction"] = "Person successfuly updated!";
-                TempData.Keep("Success");
-                TempData.Keep("CompletedAction");
-                TempData.Keep();
-                return RedirectToAction("Index");
+                return View("Index", _personHelpers.UpdatePerson(person));
             }
-            return View(person);
         }
 
         // GET: People/Delete/5
         public ActionResult Delete(int? id)
-        {
-            if (id == null)
+        {            
+            if (_personHelpers.PersonHasActiveAccount(id))
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View("Index",_personHelpers.GetPeopleVMUserHasActiveAccount());
             }
-            Person person = personRepository.GetPersonByID(id.Value);
-           
-            
-            if (person == null)
+            else
             {
-                return HttpNotFound();
+                return View(_personHelpers.GetPersonVM(id.Value));
             }
-            List<Account> accounts = accountRepository.GetPersonAccounts(id.Value).ToList();
-            //checks if person has at least one open account
-            if (accounts.Select(x => x.Status.Key).Contains(StatusKeys.AccountOpen))
-            {
-                TempData["Success"] = false;
-                TempData["CompletedAction"] = "People with open accounts cannot be deleted!";
-                TempData.Keep("Success");
-                TempData.Keep("CompletedAction");
-                TempData.Keep();
-                return RedirectToAction("Index");
-            }
-            return View(person);
         }
 
         // POST: People/Delete/5
@@ -204,42 +112,21 @@ namespace SkillsAssessment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            unitOfWork.CreateTransaction();
-
-            personRepository.DeletePerson(id);
-            unitOfWork.Save();
-            unitOfWork.Commit();
-            TempData["Success"] = true;
-            TempData["CompletedAction"] = "Person has been deleted successfuly!";
-            TempData.Keep("Success");
-            TempData.Keep("CompletedAction");
-            TempData.Keep();
-            return RedirectToAction("Index");
-  
+            return View("Index", _personHelpers.DeletePerson(id));
         }
 
 
         public ActionResult Restore(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Person person = personRepository.GetPersonByID(id.Value);
-            if (person == null)
-            {
-                return HttpNotFound();
-            }
+            Person person = _personHelpers.GetPersonByID(id.Value);
             if (person.IsActive)
             {
-                TempData["Success"] = false;
-                TempData["CompletedAction"] = "Only deleted people can be restored!";
-                TempData.Keep("Success");
-                TempData.Keep("CompletedAction");
-                TempData.Keep();
-                return RedirectToAction("Index");
+                return View("Edit", _personHelpers.GetPersonVMCannotRestoreActiveUser(id.Value));
             }
-            return View(person);
+            else
+            {
+                return View(_personHelpers.GetPersonVM(id.Value));
+            }
         }
 
         // POST: People/Restore/5
@@ -247,21 +134,11 @@ namespace SkillsAssessment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RestoreConfirmed(int id)
         {
-            unitOfWork.CreateTransaction();
-
-            personRepository.RestorePerson(id);
-            unitOfWork.Save();
-            unitOfWork.Commit();
-            TempData["Success"] = true;
-            TempData["CompletedAction"] = "Person has been restored successfuly!";
-            TempData.Keep("Success");
-            TempData.Keep("CompletedAction");
-            TempData.Keep();
-            return RedirectToAction("Index");
+            return View("Index", _personHelpers.RestorePerson(id));
         }
         protected override void Dispose(bool disposing)
         {
-            personRepository.Dispose();
+            _personHelpers.Dispose();
         }
     }
 }
